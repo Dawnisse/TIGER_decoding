@@ -57,18 +57,13 @@ Int_t tcoarse_frame =0;
 Int_t pinNum;
 Int_t strNum;
 
-void channelTimingDist() {
+void HitsinTime() {
   
-    ifstream inFile("../data_folder/RUN_19/SubRUN_0_GEMROC_0_TL.datout.txt");
+    ifstream inFile("../data_folder/RUN_15/SubRUN_34_GEMROC_0_TL.datout.txt");
     
-    TH2D *chn_time_dist_T0T1 = new TH2D("hit time distribution extTP (T0T1)",  Form("hit time distribution  extTP (T0 T1);strip;Time[s]"), 124, -0.5, 123.5, 67,0,6.7);
-    TH2D *chn_time_dist_T2T3 = new TH2D("hit time distribution MM (T2T3)",  Form("hit time distribution MM (T2 T3);strip;Time[s]"), 124, -0.5, 123.5, 67,0,6.7);
-    TH2D *chn_time_dist_T2 = new TH2D("hit time dist T2", Form("hit time dist T2;ch;Time[s]"), 64, -0.5,63.5,3000,0,3);
-    TH2D *chn_time_dist_T3 = new TH2D("hit time dist T3", Form("hit time dist T3;ch;Time[s]"), 64, -0.5,63.5,3000,0,3);
-    //TH2D *chn_time_dist_T4T5 = new TH2D("hit time distribution extTP (T4T5)",  Form("hit time distribution  extTP (T4 T5);strip;Time[s]"), 124, -0.5, 123.5, 67,0,6.7);
-    //TH2D *chn_time_dist_T6T7 = new TH2D("hit time distribution extTP (T6T7)",  Form("hit time distribution  extTP (T6 T7);strip;Time[s]"), 124, -0.5, 123.5, 67,0,6.7);
-
-    
+    TH1D *hit_time_dist_T0T1 = new TH1D("hits data time distribution MM1 (T0T1)",  Form("hits data time distribution  MM1 (T0 T1);Time[s];hit"),  670,0,6.7);
+    TH1D *hit_time_dist_T2T3 = new TH1D("hits data time distribution extTP (T2T3)",  Form("hits data time distribution  extTP (T2 T3);Time[s];hit"),  670,0,6.7);
+ 
     //validity check
    if (inFile.fail()) {
         cerr << "errore nell'apertura del file, uscita dal programma" << endl;
@@ -121,6 +116,7 @@ void channelTimingDist() {
 
 // TIME VALUE
 timeVal = framenum/3 * 204.8e-6 + (tcoarse-tcoarse_frame) * 6.25e-9; //s
+//cout << "hit "<< ibit << " at: " << timeVal << endl;
 
 // ------------------------ TIGER 0 ------------------------------ //
         if (tigerId == 0 && mode == "EW:"){
@@ -194,10 +190,8 @@ timeVal = framenum/3 * 204.8e-6 + (tcoarse-tcoarse_frame) * 6.25e-9; //s
                 case(63) : break;
 
             }
-            
-			//filling histos
-            
-				chn_time_dist_T0T1->Fill(strNum,timeVal);
+            	hit_time_dist_T0T1->Fill(timeVal);
+
         }
 // ------------------------ TIGER 1 ------------------------------ //
         if (tigerId == 1 && mode == "EW:") {
@@ -271,10 +265,7 @@ timeVal = framenum/3 * 204.8e-6 + (tcoarse-tcoarse_frame) * 6.25e-9; //s
                 case(63): break;	
 
             }
-
-            
-                chn_time_dist_T0T1->Fill(strNum,timeVal);
-          
+            hit_time_dist_T0T1->Fill(timeVal);    
         }
 // ------------------------ TIGER 2 ------------------------------ //
         if (tigerId == 2 && mode == "EW:"){
@@ -350,10 +341,9 @@ timeVal = framenum/3 * 204.8e-6 + (tcoarse-tcoarse_frame) * 6.25e-9; //s
 
             }
 
+
+			hit_time_dist_T2T3->Fill(timeVal);
             
-				chn_time_dist_T2T3->Fill(strNum,timeVal);
-                chn_time_dist_T2->Fill(ch,timeVal);
-         
         }
 // ------------------------ TIGER 3 ------------------------------ //
         if (tigerId == 3 && mode == "EW:"){
@@ -428,319 +418,7 @@ timeVal = framenum/3 * 204.8e-6 + (tcoarse-tcoarse_frame) * 6.25e-9; //s
 
             }
 
-            
-				chn_time_dist_T2T3->Fill(strNum, timeVal);
-                chn_time_dist_T3->Fill(ch,timeVal);
-
-                if(ch==22|ch==26) cout << "ch: " << ch << " hits at: "<< timeVal <<endl;
-        }
-// ------------------------ TIGER 4 ------------------------------ //
-        if (tigerId == 4 && mode == "EW:"){
-
-            //MAPPING PROCEDURE
-            switch (ch){
-			
-	            case(0)  : pinNum = 77;  strNum = 111; break;
-	            case(1)  : pinNum = 122; strNum = 61; break;
-	            case(2)  : pinNum = 73;  strNum = 109 ; break;
-                case(3)  : pinNum = 74;  strNum = 37; break;
-                case(4)  : pinNum = 134; strNum = 68; break;
-                case(5)  : pinNum = 62;  strNum = 31 ; break;
-	            case(6)  : pinNum = 130; strNum = 65; break;
-                case(7)  : pinNum = 72;  strNum = 36; break;
-                case(8)  : pinNum = 144; strNum = 72; break;
-                case(9)  : pinNum = 66;  strNum = 33; break;
-	            case(10) : pinNum = 138; strNum = 69; break;
-                case(11) : pinNum = 98;  strNum = 49; break;
-                case(12) : pinNum = 132; strNum = 66; break;
-                case(13) : pinNum = 70;  strNum = 35; break;
-                case(14) : pinNum = 89;  strNum = 117; break;
-                case(15) : pinNum = 114; strNum = 57; break;
-                case(16) : pinNum = 81;  strNum = 113;break;
-                case(17) : pinNum = 94;  strNum = 47; break;
-	            case(18) : pinNum = 83;  strNum = 114;break;
-                case(19) : pinNum = 112; strNum = 56; break;
-                case(20) : pinNum = 67;  strNum = 106; break;
-                case(21) : pinNum = 142; strNum = 71; break;
-                case(22) : pinNum = 71;  strNum = 108; break;
-                case(23) : pinNum = 136; strNum = 68; break;
-                case(24) : pinNum = 69;  strNum = 107; break;
-                case(25) : pinNum = 106; strNum = 53; break;
-                case(26) : pinNum = 63;  strNum = 104; break;
-                case(27) : pinNum = 102; strNum = 51; break;
-                case(28) : pinNum = 65;  strNum = 105; break;
-                case(29) : pinNum = 120; strNum = 60; break;
-                case(30) : pinNum = 87;  strNum = 116;break;
-                case(31) : pinNum = 118; strNum = 59; break;
-                case(32) : pinNum = 76;  strNum = 38; break;
-                case(33) : pinNum = 128; strNum = 64; break;
-                case(34) : pinNum = 78;  strNum = 39; break;
-                case(35) : pinNum = 124; strNum = 62; break;
-	            case(36) : pinNum = 79;  strNum = 112; break;
-	            case(37) : pinNum = 96;  strNum = 48;  break;
-	            case(38) : pinNum = 85;  strNum = 115; break;
-                case(39) : pinNum = 110; strNum = 55; break;    
-                case(40) : pinNum = 135; strNum = 120; break;     
-                case(41) : pinNum = 126; strNum = 63; break;      
-                case(42) : pinNum = 64;  strNum = 32;break;    
-                case(43) : pinNum = 86;  strNum = 43; break;
-                case(44) : pinNum = 82;  strNum = 41; break;
-                case(45) : pinNum = 141; strNum = 123; break;
-                case(46) : pinNum = 80;  strNum = 40; break;
-                case(47) : pinNum = 140; strNum = 70; break;
-                case(48) : pinNum = 75;  strNum = 110; break;
-                case(49) : pinNum = 116; strNum = 58; break;
-                case(50) : pinNum = 139; strNum = 122; break;
-                case(51) : pinNum = 100; strNum = 50; break;
-                case(52) : pinNum = 137; strNum = 121; break;
-                case(53) : pinNum = 92;  strNum = 46; break;
-                case(54) : pinNum = 90;  strNum = 45; break;
-                case(55) : pinNum = 108; strNum = 54; break;
-                case(56) : pinNum = 84;  strNum = 42; break;
-                case(57) : pinNum = 143; strNum = 124; break;
-                case(58) : pinNum = 68;  strNum = 34; break;
-                case(59) : pinNum = 88;  strNum = 44; break;
-                case(60) : pinNum = 104; strNum = 52; break;
-                case(61) : pinNum = 133; strNum = 119; break;
-	            case(62) : break;
-                case(63) : break;
-
-            }
-            
-			//filling histos
-            
-				//chn_time_dist_T4T5->Fill(strNum,timeVal);
-        }
-// ------------------------ TIGER 5 ------------------------------ //
-        if (tigerId == 5 && mode == "EW:"){
-
-            //MAPPING PROCEDURE
-            switch (ch){
-            
-                case(0) : pinNum =	21	; strNum= 83; break;            
-                case(1) : pinNum =	28	; strNum= 14; break;            
-                case(2) : pinNum =	42	; strNum= 21; break;            
-                case(3) : pinNum =	1	; strNum= 73; break;            
-                case(4) : pinNum =	7	; strNum= 76; break;            
-                case(5) : pinNum =	52	; strNum= 26; break;            
-                case(6) : pinNum =	18	; strNum= 9; break;           
-                case(7) : pinNum =	26	; strNum= 13 ; break;       
-                case(8) : pinNum =	48	; strNum= 24; break;            
-                case(9) : pinNum =	20	; strNum= 10 ; break;       
-                case(10): pinNum =	50	; strNum= 25 ; break;       
-                case(11): pinNum =	3	; strNum= 74 ; break;       
-                case(12): pinNum =	9	; strNum= 77 ; break;       
-                case(13): pinNum =	32	; strNum= 16 ; break;       
-                case(14): pinNum =	17	; strNum= 81 ; break;       
-                case(15): pinNum =	15	; strNum= 80 ; break;       
-                case(16): pinNum =	33	; strNum= 89 ; break;       
-                case(17): pinNum =	44	; strNum= 22 ; break;       
-                case(18): pinNum =	56	; strNum= 28 ; break;       
-                case(19): pinNum =	13	; strNum= 79 ; break;       
-                case(20): pinNum =	31	; strNum= 88 ; break;       
-                case(21): pinNum =	46	; strNum= 23 ; break;       
-                case(22): pinNum =	5	; strNum= 75 ; break;       
-                case(23): pinNum =	11	; strNum= 78 ; break;       
-                case(24): pinNum =	54	; strNum= 27 ; break;       
-                case(25): pinNum =	22	; strNum= 11 ; break;       
-                case(26): pinNum =	23	; strNum= 84 ; break;       
-                case(27): pinNum =	30	; strNum= 15 ; break;       
-                case(28): pinNum =	35	; strNum= 90 ; break;       
-                case(29): pinNum =	24	; strNum= 12 ; break;       
-                case(30): pinNum =	58	; strNum= 29 ; break;       
-                case(31): pinNum =	34	; strNum= 17 ; break;       
-                case(32): pinNum =	60	; strNum= 30 ; break;       
-                case(33): pinNum =	12	; strNum= 6  ; break;      
-                case(34): pinNum =	59	; strNum= 102; break;        
-                case(35): pinNum =	36	; strNum= 18 ; break;       
-                case(36): pinNum =	57	; strNum= 101; break;        
-                case(37): pinNum =	16	; strNum= 8  ; break;      
-                case(38): pinNum =	61	; strNum= 103; break;        
-                case(39): pinNum =	14	; strNum= 7  ; break;      
-                case(40): pinNum =	49	; strNum= 97 ; break;       
-                case(41): pinNum =	8	; strNum= 4  ; break;      
-                case(42): pinNum =	55	; strNum= 100; break;        
-                case(43): pinNum =	10	; strNum= 5  ; break;      
-                case(44): pinNum =	53	; strNum= 99 ; break;       
-                case(45): pinNum =	2	; strNum= 1  ; break;      
-                case(46): pinNum =	47	; strNum= 96 ; break;       
-                case(47): pinNum =	4	; strNum= 2  ; break;      
-                case(48): pinNum =	51	; strNum= 98 ; break;       
-                case(49): pinNum =	25	; strNum= 85 ; break;       
-                case(50): pinNum =	41	; strNum= 93 ; break;       
-                case(51): pinNum =	29	; strNum= 87 ; break;       
-                case(52): pinNum =	43	; strNum= 94 ; break;       
-                case(53): pinNum =	40	; strNum= 20 ; break;       
-                case(54): pinNum =	6	; strNum= 3  ; break;      
-                case(55): pinNum =	27	; strNum= 86 ; break;       
-                case(56): pinNum =	39	; strNum= 92 ; break;       
-                case(57): pinNum =	38	; strNum= 19 ; break;       
-                case(58): pinNum =	45	; strNum= 95 ; break;       
-                case(59): pinNum =	37	; strNum= 91 ; break;       
-                case(60): pinNum =	19	; strNum= 82 ; break;       
-                case(61): pinNum =	91	; strNum= 118; break;        
-                case(62): break;	
-                case(63): break;	
-
-            }
-            
-			//filling histos
-            
-				//chn_time_dist_T4T5->Fill(strNum,timeVal);
-        }
-// ------------------------ TIGER 6 ------------------------------ //
-        if (tigerId == 6 && mode == "EW:"){
-
-            //MAPPING PROCEDURE
-            switch (ch){
-			
-	            case(0)  : pinNum = 77;  strNum = 111; break;
-	            case(1)  : pinNum = 122; strNum = 61; break;
-	            case(2)  : pinNum = 73;  strNum = 109 ; break;
-                case(3)  : pinNum = 74;  strNum = 37; break;
-                case(4)  : pinNum = 134; strNum = 68; break;
-                case(5)  : pinNum = 62;  strNum = 31 ; break;
-	            case(6)  : pinNum = 130; strNum = 65; break;
-                case(7)  : pinNum = 72;  strNum = 36; break;
-                case(8)  : pinNum = 144; strNum = 72; break;
-                case(9)  : pinNum = 66;  strNum = 33; break;
-	            case(10) : pinNum = 138; strNum = 69; break;
-                case(11) : pinNum = 98;  strNum = 49; break;
-                case(12) : pinNum = 132; strNum = 66; break;
-                case(13) : pinNum = 70;  strNum = 35; break;
-                case(14) : pinNum = 89;  strNum = 117; break;
-                case(15) : pinNum = 114; strNum = 57; break;
-                case(16) : pinNum = 81;  strNum = 113;break;
-                case(17) : pinNum = 94;  strNum = 47; break;
-	            case(18) : pinNum = 83;  strNum = 114;break;
-                case(19) : pinNum = 112; strNum = 56; break;
-                case(20) : pinNum = 67;  strNum = 106; break;
-                case(21) : pinNum = 142; strNum = 71; break;
-                case(22) : pinNum = 71;  strNum = 108; break;
-                case(23) : pinNum = 136; strNum = 68; break;
-                case(24) : pinNum = 69;  strNum = 107; break;
-                case(25) : pinNum = 106; strNum = 53; break;
-                case(26) : pinNum = 63;  strNum = 104; break;
-                case(27) : pinNum = 102; strNum = 51; break;
-                case(28) : pinNum = 65;  strNum = 105; break;
-                case(29) : pinNum = 120; strNum = 60; break;
-                case(30) : pinNum = 87;  strNum = 116;break;
-                case(31) : pinNum = 118; strNum = 59; break;
-                case(32) : pinNum = 76;  strNum = 38; break;
-                case(33) : pinNum = 128; strNum = 64; break;
-                case(34) : pinNum = 78;  strNum = 39; break;
-                case(35) : pinNum = 124; strNum = 62; break;
-	            case(36) : pinNum = 79;  strNum = 112; break;
-	            case(37) : pinNum = 96;  strNum = 48;  break;
-	            case(38) : pinNum = 85;  strNum = 115; break;
-                case(39) : pinNum = 110; strNum = 55; break;    
-                case(40) : pinNum = 135; strNum = 120; break;     
-                case(41) : pinNum = 126; strNum = 63; break;      
-                case(42) : pinNum = 64;  strNum = 32;break;    
-                case(43) : pinNum = 86;  strNum = 43; break;
-                case(44) : pinNum = 82;  strNum = 41; break;
-                case(45) : pinNum = 141; strNum = 123; break;
-                case(46) : pinNum = 80;  strNum = 40; break;
-                case(47) : pinNum = 140; strNum = 70; break;
-                case(48) : pinNum = 75;  strNum = 110; break;
-                case(49) : pinNum = 116; strNum = 58; break;
-                case(50) : pinNum = 139; strNum = 122; break;
-                case(51) : pinNum = 100; strNum = 50; break;
-                case(52) : pinNum = 137; strNum = 121; break;
-                case(53) : pinNum = 92;  strNum = 46; break;
-                case(54) : pinNum = 90;  strNum = 45; break;
-                case(55) : pinNum = 108; strNum = 54; break;
-                case(56) : pinNum = 84;  strNum = 42; break;
-                case(57) : pinNum = 143; strNum = 124; break;
-                case(58) : pinNum = 68;  strNum = 34; break;
-                case(59) : pinNum = 88;  strNum = 44; break;
-                case(60) : pinNum = 104; strNum = 52; break;
-                case(61) : pinNum = 133; strNum = 119; break;
-	            case(62) : break;
-                case(63) : break;
-
-            }
-            
-			//filling histos
-            
-				//chn_time_dist_T6T7->Fill(strNum,timeVal);
-        }
-// ------------------------ TIGER 7 ------------------------------ //
-        if (tigerId == 7 && mode == "EW:"){
-
-            //MAPPING PROCEDURE
-            switch (ch){
-            
-                case(0) : pinNum =	21	; strNum= 83; break;            
-                case(1) : pinNum =	28	; strNum= 14; break;            
-                case(2) : pinNum =	42	; strNum= 21; break;            
-                case(3) : pinNum =	1	; strNum= 73; break;            
-                case(4) : pinNum =	7	; strNum= 76; break;            
-                case(5) : pinNum =	52	; strNum= 26; break;            
-                case(6) : pinNum =	18	; strNum= 9; break;           
-                case(7) : pinNum =	26	; strNum= 13 ; break;       
-                case(8) : pinNum =	48	; strNum= 24; break;            
-                case(9) : pinNum =	20	; strNum= 10 ; break;       
-                case(10): pinNum =	50	; strNum= 25 ; break;       
-                case(11): pinNum =	3	; strNum= 74 ; break;       
-                case(12): pinNum =	9	; strNum= 77 ; break;       
-                case(13): pinNum =	32	; strNum= 16 ; break;       
-                case(14): pinNum =	17	; strNum= 81 ; break;       
-                case(15): pinNum =	15	; strNum= 80 ; break;       
-                case(16): pinNum =	33	; strNum= 89 ; break;       
-                case(17): pinNum =	44	; strNum= 22 ; break;       
-                case(18): pinNum =	56	; strNum= 28 ; break;       
-                case(19): pinNum =	13	; strNum= 79 ; break;       
-                case(20): pinNum =	31	; strNum= 88 ; break;       
-                case(21): pinNum =	46	; strNum= 23 ; break;       
-                case(22): pinNum =	5	; strNum= 75 ; break;       
-                case(23): pinNum =	11	; strNum= 78 ; break;       
-                case(24): pinNum =	54	; strNum= 27 ; break;       
-                case(25): pinNum =	22	; strNum= 11 ; break;       
-                case(26): pinNum =	23	; strNum= 84 ; break;       
-                case(27): pinNum =	30	; strNum= 15 ; break;       
-                case(28): pinNum =	35	; strNum= 90 ; break;       
-                case(29): pinNum =	24	; strNum= 12 ; break;       
-                case(30): pinNum =	58	; strNum= 29 ; break;       
-                case(31): pinNum =	34	; strNum= 17 ; break;       
-                case(32): pinNum =	60	; strNum= 30 ; break;       
-                case(33): pinNum =	12	; strNum= 6  ; break;      
-                case(34): pinNum =	59	; strNum= 102; break;        
-                case(35): pinNum =	36	; strNum= 18 ; break;       
-                case(36): pinNum =	57	; strNum= 101; break;        
-                case(37): pinNum =	16	; strNum= 8  ; break;      
-                case(38): pinNum =	61	; strNum= 103; break;        
-                case(39): pinNum =	14	; strNum= 7  ; break;      
-                case(40): pinNum =	49	; strNum= 97 ; break;       
-                case(41): pinNum =	8	; strNum= 4  ; break;      
-                case(42): pinNum =	55	; strNum= 100; break;        
-                case(43): pinNum =	10	; strNum= 5  ; break;      
-                case(44): pinNum =	53	; strNum= 99 ; break;       
-                case(45): pinNum =	2	; strNum= 1  ; break;      
-                case(46): pinNum =	47	; strNum= 96 ; break;       
-                case(47): pinNum =	4	; strNum= 2  ; break;      
-                case(48): pinNum =	51	; strNum= 98 ; break;       
-                case(49): pinNum =	25	; strNum= 85 ; break;       
-                case(50): pinNum =	41	; strNum= 93 ; break;       
-                case(51): pinNum =	29	; strNum= 87 ; break;       
-                case(52): pinNum =	43	; strNum= 94 ; break;       
-                case(53): pinNum =	40	; strNum= 20 ; break;       
-                case(54): pinNum =	6	; strNum= 3  ; break;      
-                case(55): pinNum =	27	; strNum= 86 ; break;       
-                case(56): pinNum =	39	; strNum= 92 ; break;       
-                case(57): pinNum =	38	; strNum= 19 ; break;       
-                case(58): pinNum =	45	; strNum= 95 ; break;       
-                case(59): pinNum =	37	; strNum= 91 ; break;       
-                case(60): pinNum =	19	; strNum= 82 ; break;       
-                case(61): pinNum =	91	; strNum= 118; break;        
-                case(62): break;	
-                case(63): break;	
-
-            }
-            
-			//filling histos
-            
-			//	chn_time_dist_T6T7->Fill(strNum,timeVal);
+            if(ch==26) cout << "hit: "<< ibit << " at: "<< timeVal << endl;
         }
 
     prev_tcoarse  = tcoarse;
@@ -760,25 +438,13 @@ timeVal = framenum/3 * 204.8e-6 + (tcoarse-tcoarse_frame) * 6.25e-9; //s
 
     initFigTemplate();
 
-//HITS time distribution for each tiger
+//data time distribution for each tiger
     
-	//TCanvas *cHitTimingDist_FEB = new TCanvas("cHitTimingDist_FEB","cHitTimingDist_FEB");
-    //cHitTimingDist_FEB-> Divide(2,1,0.01,0.01);
+	TCanvas *cHitTimingDist_FEB = new TCanvas("cHitTimingDist_FEB","cHitTimingDist_FEB");
+    cHitTimingDist_FEB-> Divide(2,1,0.01,0.01);
 
-    //cHitTimingDist_FEB->cd(1);
-	//chn_time_dist_T0T1->Draw("colz");
-    //cHitTimingDist_FEB->cd(2);
-	//chn_time_dist_T2T3->Draw("colz");
-    //cHitTimingDist_FEB->cd(3);
-	//chn_time_dist_T4T5->Draw("colz");
-    //cHitTimingDist_FEB->cd(4);
-	//chn_time_dist_T6T7->Draw("colz");
-
-    TCanvas *cHitTimingDist_T2 = new TCanvas("cHitTimingDist_T2","cHitTimingDist_T2");
-    cHitTimingDist_T2->cd();
-    chn_time_dist_T2->Draw("colz");
-    TCanvas *cHitTimingDist_T3 = new TCanvas("cHitTimingDist_T3","cHitTimingDist_T3");
-    cHitTimingDist_T3->cd();
-    chn_time_dist_T3->Draw("colz");
-
+    cHitTimingDist_FEB->cd(1);
+	hit_time_dist_T0T1->Draw("colz");
+    cHitTimingDist_FEB->cd(2);
+	hit_time_dist_T2T3->Draw("colz");
 }

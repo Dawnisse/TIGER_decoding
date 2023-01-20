@@ -22,14 +22,17 @@
 using namespace std;
 
 //IdStrings declaration
-string tiger_bon0;     string tiger_boff1;     
-string mode_bon0;      string mode_boff1;      
-string channel_bon0;   string channel_boff1;   
-string tac_Id_bon0;    string tac_Id_boff1;    
-string t_coarse_bon0;  string t_coarse_boff1;  
-string e_coarse_bon0;  string e_coarse_boff1;  
-string t_fine_bon0;    string t_fine_boff1;    
-string e_fine_bon0;    string e_fine_boff1;   
+string header;              string status_bit;
+string local_l1_count;      string hit_count;
+string local_l1_timestamp;  string diff_l1_prev_TS;
+string tiger_bon0;          string tiger_boff1;     
+string mode_bon0;           string mode_boff1;      
+string channel_bon0;        string channel_boff1;   
+string tac_Id_bon0;         string tac_Id_boff1;    
+string t_coarse_bon0;       string t_coarse_boff1;  
+string e_coarse_bon0;       string e_coarse_boff1;  
+string t_fine_bon0;         string t_fine_boff1;    
+string e_fine_bon0;         string e_fine_boff1;   
 
 //variables declaration
 Int_t tigerId_bon0;       Int_t tigerId_boff1;     
@@ -63,10 +66,10 @@ Int_t tcoarse_frame_boff1 =0;
 Int_t pinNum;
 Int_t strNum;
 
-void beam_off_subtraction() {
+void beam_off_subtraction_TM() {
   
-    ifstream inFile_bon0("../data_folder/RUN_0/SubRUN_0_GEMROC_0_TL.datout.txt");
-    ifstream inFile_boff1("../../../TIGER_data/Bonn@HISKPlab/RUN_185/SubRUN_0_GEMROC_0_TL.datout.txt"); 
+    ifstream inFile_bon0("../../../TIGER_data/Bonn@HISKPlab/RUN_133/SubRUN_0_GEMROC_0_TL.datout.txt");
+    ifstream inFile_boff1("../../../TIGER_data/Bonn@HISKPlab/RUN_135/SubRUN_0_GEMROC_0_TL.datout.txt"); 
     
     TH1D *data_dist_T0 = new TH1D("data time profile T0", Form("data time profile T0;Time[s];Counts"), 115, 9.8,21.3);
     TH1D *data_dist_T1 = new TH1D("data time profile T1", Form("data time profile T1;Time[s];Counts"), 115, 9.8,21.3);
@@ -91,8 +94,8 @@ void beam_off_subtraction() {
     TH1D *beam_profile_diffSUB0SUB1_T2T3 = new TH1D("beam profile", Form("beam profile MM1 (T2T3);strNum;Counts"),124,-0.5,123.5);
     TH1D *beam_profile_diffSUB0SUB1_T4T5 = new TH1D("beam profile", Form("beam profile MM2 (T4T5);strNum;Counts"),124,-0.5,123.5);
     
-    TH1D *ch_56_T0_efine_bon = new TH1D("ch_56_t0_efine", Form("ch 41 TIGER:0 Efine BEAM ON; Efine[bin]; Counts"),1024,0,1024);
-    TH1D *ch_56_T0_efine_boff = new TH1D("ch_56_t0_efine", Form("ch 41 TIGER:0 Efine BEAM OFF; Efine[bin]; Counts"),1024,0,1024);
+    TH1D *ch_41_T0_efine_bon = new TH1D("ch_41_t0_efine", Form("ch 41 TIGER:0 Efine BEAM ON; Efine[bin]; Counts"),1024,0,1024);
+    TH1D *ch_41_T0_efine_boff = new TH1D("ch_41_t0_efine", Form("ch 41 TIGER:0 Efine BEAM OFF; Efine[bin]; Counts"),1024,0,1024);
  
     TH2D *chn_time_dist_SUB0_T0T1 = new TH2D("channels data time distribution SUB0 exTP (T0T1)",  Form("channel data time distribution Sub0  exTP (T0 T1);strip;Time[s]"), 124, -0.5, 123.5, 42,0,4.2);
     TH2D *chn_time_dist_SUB0_T2T3 = new TH2D("channels data time distribution SUB0 MM1 (T2T3)",  Form("channel data time distribution  Sub0 MM1 (T2 T3);strip;Time[s]"), 124, -0.5, 123.5, 42,0,4.2);
@@ -180,7 +183,7 @@ void beam_off_subtraction() {
             data_dist_T0 -> Fill(timeVal_bon0);
             data_dist_T0T1 -> Fill(timeVal_bon0);
             if(ch_bon0 == 41) {
-                ch_56_T0_efine_bon->Fill(efine_bon0);
+                ch_41_T0_efine_bon->Fill(efine_bon0);
             }
 
             //MAPPING PROCEDURE
@@ -736,7 +739,7 @@ void beam_off_subtraction() {
             data_dist_T0T1 -> Fill(timeVal_boff1);
 
             if(ch_boff1==41) {
-                ch_56_T0_efine_boff->Fill(efine_boff1);
+                ch_41_T0_efine_boff->Fill(efine_boff1);
             }
 
             //MAPPING PROCEDURE
@@ -810,7 +813,7 @@ void beam_off_subtraction() {
             }
             beam_profile_SUB1_T0T1->Fill(strNum);
             if(strNum==63){
-                ch_56_T0_efine_boff->Fill(efine_boff1);
+                ch_41_T0_efine_boff->Fill(efine_boff1);
             }
             if(timeVal_boff1< timeVal_prev_boff1 + 20e-9) {
                 chn_time_dist_SUB1_T0T1->Fill(strNum, timeVal_boff1_fordiff);
@@ -1345,10 +1348,10 @@ TLegend *legt4t5 = new TLegend(0.1,0.7,0.48,0.9);
 
 //Efine canale attivo
 //TCanvas *cEfine_63str = new TCanvas("cEfine_63str","cEfine_63str");
-//      ch_56_T0_efine_bon->SetLineColor(kBlue);
-//	  ch_56_T0_efine_bon->Draw("same");
-//      ch_56_T0_efine_boff->SetLineColor(kRed);
-//      ch_56_T0_efine_boff->Draw("same");
+//      ch_41_T0_efine_bon->SetLineColor(kBlue);
+//	  ch_41_T0_efine_bon->Draw("same");
+//      ch_41_T0_efine_boff->SetLineColor(kRed);
+//      ch_41_T0_efine_boff->Draw("same");
 
 //TLegend *legenda = new TLegend(0.1,0.7,0.48,0.9);
 //        legenda->SetFillColor(0);
@@ -1358,6 +1361,7 @@ TLegend *legt4t5 = new TLegend(0.1,0.7,0.48,0.9);
 //        
 //        legenda->Draw();
 
+        /*
     TCanvas *cChannel_beam_profile = new TCanvas("cChannel_beam_profile","cChannel_beam_profile");
     cChannel_beam_profile-> Divide(1,3,0.01,0.01);
 
@@ -1383,7 +1387,7 @@ TLegend *legt4t5 = new TLegend(0.1,0.7,0.48,0.9);
         leg->AddEntry(beam_profile_SUB0_T0T1, "background no source", "lp");
         leg->AddEntry(beam_profile_SUB1_T0T1, "Fe55 source center", "lp");
         leg->Draw();
-*/
+
 
 //channel correlation with data time distribution for MMs (SUB0->BEAM-ON)
 
@@ -1411,7 +1415,6 @@ TLegend *legt4t5 = new TLegend(0.1,0.7,0.48,0.9);
     cCH_time_dist_SubRUN1->cd(3);
 	  chn_time_dist_SUB1_T4T5->Draw("colz");
 
-
 //sottrazione del fondo
     chn_time_dist_diffSUB0SUB1_T0T1->Add(chn_time_dist_SUB0_T0T1, chn_time_dist_SUB1_T0T1, 1,-1);
     chn_time_dist_diffSUB0SUB1_T2T3->Add(chn_time_dist_SUB0_T2T3, chn_time_dist_SUB1_T2T3, 1,-1);
@@ -1427,6 +1430,7 @@ TLegend *legt4t5 = new TLegend(0.1,0.7,0.48,0.9);
     chn_time_dist_diffSUB0SUB1_T2T3->Draw("colz");
     cCH_time_dist_DIFF->cd(3);
     chn_time_dist_diffSUB0SUB1_T4T5->Draw("colz");
+*/
 
 
 
